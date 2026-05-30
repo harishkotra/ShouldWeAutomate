@@ -7,6 +7,12 @@
 ![Flask](https://img.shields.io/badge/flask-3.0-lightgrey)
 [![Built by Harish Kotra](https://img.shields.io/badge/built%20by-harishkotra.me-blueviolet)](https://harishkotra.me)
 
+### Screenshots
+
+<img width="1667" height="4216" alt="screencapture-127-0-0-1-8080-2026-05-30-23_37_19" src="https://github.com/user-attachments/assets/63a35395-e8ae-4d2c-84a2-91210d5966e9" />
+<img width="1667" height="7671" alt="screencapture-127-0-0-1-8080-2026-05-30-23_39_45" src="https://github.com/user-attachments/assets/67724a56-25c8-4a6b-a8b0-3c258e89c6dc" />
+<img width="1667" height="1085" alt="screencapture-127-0-0-1-8080-2026-05-30-23_39_57" src="https://github.com/user-attachments/assets/6c3aae64-4ca3-45e4-a8a8-ac38c3535e09" />
+
 ---
 
 ## ✨ Features
@@ -173,14 +179,3 @@ source .venv/bin/activate
 pip install -r requirements.txt
 pip install pytest
 ```
-
-## 📄 License
-
-MIT — free for any use.
-
----
-
-<p align="center">
-  <a href="https://harishkotra.me">Built by Harish Kotra</a> ·
-  <a href="https://dailybuild.xyz">Check out my other builds</a>
-</p>
