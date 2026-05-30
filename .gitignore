@@ -1,6 +1,7 @@
 # Python
 __pycache__/
 *.py[cod]
+*.pyo
 *.egg-info/
 dist/
 build/
@@ -8,14 +9,18 @@ build/
 .pytest_cache/
 .ruff_cache/
 .coverage
+.coverage.*
+coverage/
 htmlcov/
-.pytest_cache/
-
-# Environment
-.env
+.mypy_cache/
 .venv/
 venv/
 env/
+
+# Environment
+.env
+.env.local
+.env.*.local
 
 # IDE
 .idea/
@@ -23,11 +28,26 @@ env/
 *.swp
 *.swo
 *~
+*.iml
 
 # OS
 .DS_Store
 Thumbs.db
+.DocumentRevisions-V100
 
 # Project specific
 .deepeval/
 *.db
+*.sqlite
+*.sqlite3
+instance/
+
+# Logs
+*.log
+
+# Generated benchmark (can be regenerated)
+# data/benchmark_workflows.json
+# data/benchmark_stats.json
+
+# Jupyter
+.ipynb_checkpoints/
