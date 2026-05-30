@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Should We Automate? — Decision Intelligence Platform</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="logo" onclick="showSection('analyze')">
+                <div class="logo-icon">⚡</div>
+                <span>ShouldWeAutomate?</span>
+            </div>
+            <nav class="nav-links">
+                <a class="active" onclick="showSection('analyze')">Analyze</a>
+                <a onclick="showSection('benchmark')">Benchmark</a>
+                <a onclick="showSection('about')">About</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- ANALYZE SECTION -->
+        <div id="section-analyze" class="section active">
+            <h1 class="section-title">Workflow Automation Readiness</h1>
+            <p class="section-subtitle">Evaluate any business workflow across 7 dimensions. Get a readiness score, risk analysis, ROI, remediation playbooks, and actionable recommendation — no account required.</p>
+
+            <div id="form-area">
+                <div class="card">
+                    <div class="card-title">Workflow Description</div>
+                    <div class="form-group">
+                        <label class="form-label">Workflow Name</label>
+                        <input type="text" id="wf-name" class="filter-input" style="width:100%" placeholder="e.g., Invoice Processing, Customer Onboarding, Claims Adjudication">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Industry</label>
+                        <select id="wf-industry" class="filter-select" style="width:100%">
+                            <option value="">Select industry...</option>
+                            <option>Healthcare</option><option>Banking</option><option>Insurance</option>
+                            <option>SaaS</option><option>Logistics</option><option>Manufacturing</option>
+                            <option>Human Resources</option><option>Legal</option><option>Government</option>
+                            <option>Retail</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- AI ENHANCEMENT — now as primary input method -->
+                <div class="card" id="llm-card">
+                    <div class="card-title" style="justify-content:space-between">
+                        <span>🤖 Describe Your Workflow — Let AI Handle the Rest</span>
+                        <div style="display:flex;align-items:center;gap:8px">
+                            <span id="llm-status-dot" style="width:10px;height:10px;border-radius:50%;background:var(--text-muted);display:inline-block"></span>
+                            <span id="llm-status-text" style="font-size:12px;color:var(--text-muted)">Checking...</span>
+                        </div>
+                    </div>
+                    <div id="llm-status-banner" style="display:none"></div>
+                    <div id="llm-content">
+                        <p style="color:var(--text-secondary);font-size:14px;margin-bottom:12px">
+                            Describe your workflow in plain language — the AI will analyze it and pre-fill all scores automatically.
+                            You can tweak them after. No AI? Just score manually below.
+                        </p>
+
+                        <!-- Example quick-pick cards -->
+                        <div style="margin-bottom:16px">
+                            <div style="font-size:12px;color:var(--text-muted);margin-bottom:8px;font-weight:500">⚡ Quick start — click an example:</div>
+                            <div style="display:flex;gap:8px;flex-wrap:wrap" id="example-cards">
+                                <div class="example-card" onclick="loadExample(0)">
+                                    <strong>📄 Invoice Processing</strong>
+                                    <span style="font-size:11px;color:var(--text-muted)">Manufacturing</span>
+                                </div>
+                                <div class="example-card" onclick="loadExample(1)">
+                                    <strong>🎫 Support Ticket Routing</strong>
+                                    <span style="font-size:11px;color:var(--text-muted)">SaaS</span>
+                                </div>
+                                <div class="example-card" onclick="loadExample(2)">
+                                    <strong>🛡️ Claims Adjudication</strong>
+                                    <span style="font-size:11px;color:var(--text-muted)">Insurance</span>
+                                </div>
+                                <div class="example-card" onclick="loadExample(3)">
+                                    <strong>👤 Employee Onboarding</strong>
+                                    <span style="font-size:11px;color:var(--text-muted)">Human Resources</span>
+                                </div>
+                                <div class="example-card" onclick="loadExample(4)">
+                                    <strong>🏠 Mortgage Processing</strong>
+                                    <span style="font-size:11px;color:var(--text-muted)">Banking</span>
+                                </div>
+                                <div class="example-card" onclick="loadExample(5)">
+                                    <strong>📦 Order Fulfillment</strong>
+                                    <span style="font-size:11px;color:var(--text-muted)">Retail</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="wf-desc" class="ai-textarea" placeholder="Paste or describe your workflow in detail...&#10;&#10;e.g. 'We process incoming invoices from 50+ vendors. Each vendor has a different format — some are PDF, some are emailed, some come through an API. Our team of 5 manually enters data into our ERP. About 30% have errors or mismatches that need review. Compliance requires audit trails for all transactions over $10k. We process about 1,000 invoices per month.'" rows="5"></textarea>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+                            <button class="btn btn-primary" style="padding:8px 20px;font-size:13px" onclick="aiInferWorkflow()" id="btn-ai-infer">
+                                🪄 Auto-fill Scores from Description
+                            </button>
+                            <span style="font-size:12px;color:var(--text-muted)">or score manually below</span>
+                            <label style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-secondary);cursor:pointer;margin-left:auto">
+                                <input type="checkbox" id="use-llm" checked>
+                                Enrich results with AI
+                            </label>
+                        </div>
+                        <div id="llm-infer-results" style="margin-top:12px;display:none"></div>
+                        <div id="llm-setup-guide" style="display:none;margin-top:16px;padding:16px;background:var(--bg-card);border-radius:10px;border:1px solid var(--border)">
+                            <strong style="font-size:14px">🔧 LLM Setup</strong>
+                            <p style="font-size:13px;color:var(--text-secondary);margin:8px 0">
+                                Create a <code>.env</code> file (or set environment variables) to enable AI-powered features:
+                            </p>
+                            <pre style="background:var(--bg-primary);padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;color:var(--accent-green)">
+LLM_BASE_URL=http://localhost:1234/v1
+LLM_MODEL=google/gemma-4-e4b</pre>
+                            <p style="font-size:12px;color:var(--text-muted);margin-top:8px">
+                                Supports any OpenAI-compatible endpoint. The app auto-detects <code>.env</code> in the project root.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- SUB-PROCESS DECOMPOSITION -->
+                <div class="card">
+                    <div class="card-title" style="justify-content:space-between">
+                        <span>🔬 Sub-Process Decomposition</span>
+                        <div style="display:flex;gap:8px">
+                            <button class="btn btn-secondary" style="padding:6px 16px;font-size:12px" onclick="addSubProcess()">+ Add Sub-Process</button>
+                            <button class="btn btn-secondary" style="padding:6px 16px;font-size:12px" onclick="toggleSubProcessMode()" id="sp-toggle">Use Single Process</button>
+                        </div>
+                    </div>
+                    <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px">
+                        Decompose your workflow into sub-processes for more precise analysis. Each sub-process gets scored independently.
+                    </p>
+                    <div id="sub-processes-container">
+                        <div class="sub-process" data-index="0">
+                            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+                                <input type="text" class="sp-name filter-input" value="Main Process" placeholder="Sub-process name" style="width:60%">
+                                <div style="display:flex;align-items:center;gap:8px">
+                                    <label style="font-size:12px;color:var(--text-muted)">Weight:</label>
+                                    <input type="number" class="sp-weight filter-input" value="1" min="0.1" max="10" step="0.1" style="width:70px">
+                                </div>
+                            </div>
+                            <div class="dim-questions"></div>
+                        </div>
+                    </div>
+                    <p id="sp-help-text" style="color:var(--text-muted);font-size:12px;margin-top:8px">
+                        ⚡ Multi-process mode: each sub-process gets its own scores. Aggregate scores are weighted by sub-process weight.
+                    </p>
+                </div>
+
+                <!-- GAMIFIED DIMENSION SCORING with live preview -->
+                <div class="card">
+                    <div class="card-title" style="justify-content:space-between">
+                        <span>🎮 Score Your Workflow</span>
+                        <span id="live-tier-badge" class="tier-badge" style="background:var(--bg-input);color:var(--text-muted);font-size:12px;padding:4px 12px;border-radius:6px">Adjust sliders to begin</span>
+                    </div>
+                    <div id="live-preview-bar" style="display:flex;align-items:center;gap:16px;margin-bottom:20px;padding:16px;background:var(--bg-input);border-radius:12px">
+                        <div style="position:relative;width:80px;height:80px;flex-shrink:0">
+                            <svg width="80" height="80" viewBox="0 0 80 80">
+                                <circle cx="40" cy="40" r="34" fill="none" stroke="var(--bg-card)" stroke-width="6"/>
+                                <circle id="live-gauge" cx="40" cy="40" r="34" fill="none" stroke="var(--text-muted)" stroke-width="6" stroke-linecap="round"
+                                    stroke-dasharray="213.6" stroke-dashoffset="213.6" transform="rotate(-90 40 40)"/>
+                            </svg>
+                            <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center">
+                                <div id="live-score" style="font-size:22px;font-weight:700;line-height:1">--</div>
+                                <div style="font-size:8px;color:var(--text-muted)">READINESS</div>
+                            </div>
+                        </div>
+                        <div style="flex:1">
+                            <div id="live-rec" style="font-size:14px;font-weight:600;color:var(--text-muted)">Describe your workflow and score the dimensions below</div>
+                            <div id="live-confidence" style="font-size:11px;color:var(--text-muted);margin-top:2px"></div>
+                        </div>
+                    </div>
+                    <div id="dimension-forms"></div>
+                </div>
+
+                <!-- ROI CALCULATOR — moved after dimension scoring -->
+                <div class="card">
+                    <div class="card-title" style="justify-content:space-between">
+                        <span>💰 Quantitative ROI Calculator</span>
+                        <button class="btn btn-secondary" style="padding:6px 16px;font-size:12px" onclick="toggleRoiCalculator()" id="roi-toggle">Show ROI Calculator</button>
+                    </div>
+                    <div id="roi-calculator" style="display:none">
+                        <p style="color:var(--text-muted);font-size:13px;margin-bottom:16px">
+                            Enter your operational parameters to get a dollar-based ROI projection, payback period, and 3-year NPV.
+                        </p>
+                        <div id="roi-fields"></div>
+                    </div>
+                </div>
+
+                <div class="card" style="text-align:center">
+                    <button class="btn btn-primary" onclick="analyzeWorkflow()" id="analyze-btn">
+                        ⚡ Analyze Workflow
+                    </button>
+                    <p class="helper-text" style="margin-top:8px">Takes ~1 second. All analysis happens server-side; we don't store your data.</p>
+                </div>
+            </div>
+
+            <!-- RESULTS DASHBOARD -->
+            <div id="results-area" class="results-area" style="display:none">
+                <div id="results-content"></div>
+
+                <!-- Results Tabs -->
+                <div class="card">
+                    <div class="tabs" id="results-tabs">
+                        <button class="tab active" onclick="switchResultsTab('overview', this)">Overview</button>
+                        <button class="tab" onclick="switchResultsTab('explanation', this)">Explanation</button>
+                        <button class="tab" onclick="switchResultsTab('whatif', this)">What-If</button>
+                        <button class="tab" onclick="switchResultsTab('remediation', this)">Remediation</button>
+                        <button class="tab" onclick="switchResultsTab('regulatory', this)">Regulatory</button>
+                        <button class="tab" id="tab-ai-btn" onclick="switchResultsTab('ai', this)" style="display:none">AI Summary</button>
+                    </div>
+
+                    <div id="tab-overview" class="tab-content active"></div>
+                    <div id="tab-explanation" class="tab-content" style="display:none"></div>
+                    <div id="tab-whatif" class="tab-content" style="display:none"></div>
+                    <div id="tab-remediation" class="tab-content" style="display:none"></div>
+                    <div id="tab-regulatory" class="tab-content" style="display:none"></div>
+                    <div id="tab-ai" class="tab-content" style="display:none"></div>
+                </div>
+
+                <div class="card" style="text-align:center">
+                    <button class="btn btn-secondary" onclick="resetAnalysis()">← Analyze Another Workflow</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- BENCHMARK SECTION -->
+        <div id="section-benchmark" class="section">
+            <h1 class="section-title">Synthetic Benchmark</h1>
+            <p class="section-subtitle">Compare against 600+ synthetic workflows across 10 industries. Each workflow has injected failure modes — broken APIs, regulatory chaos, data rot, edge cases.</p>
+            <div id="benchmark-stats"></div>
+            <div class="filters">
+                <select id="bf-industry" class="filter-select" onchange="loadBenchmark()"><option value="">All Industries</option></select>
+                <select id="bf-category" class="filter-select" onchange="loadBenchmark()"><option value="">All Categories</option></select>
+                <input type="text" id="bf-search" class="filter-input" placeholder="Search workflows..." oninput="loadBenchmark()">
+                <button class="btn btn-secondary" onclick="loadBenchmark()">Refresh</button>
+            </div>
+            <div id="benchmark-results"></div>
+        </div>
+
+        <!-- ABOUT SECTION -->
+        <div id="section-about" class="section">
+            <h1 class="section-title">About This Platform</h1>
+            <p class="section-subtitle">Built by skeptics, for pragmatists.</p>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+                <div class="card">
+                    <div class="card-title">The Framework</div>
+                    <p style="color:var(--text-secondary);font-size:14px">Seven weighted dimensions produce a single readiness score from 0-100. Recommendations range from <strong>DO NOT AUTOMATE</strong> to <strong>AGENT AUTOMATION READY</strong>.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Scoring Philosophy</div>
+                    <p style="color:var(--text-secondary);font-size:14px">Higher governance risk = lower score. Poor data quality caps readiness regardless of other dimensions. We're biased toward human-in-the-loop systems when uncertainty exists.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Synthetic Benchmark</div>
+                    <p style="color:var(--text-secondary);font-size:14px">600+ generated workflows across 10 industries with deliberately injected failure modes: contradictory rules, broken APIs, regulatory churn, missing data, seasonal spikes, fraud scenarios, multilingual documents, legacy ERP integrations.</p>
+                </div>
+                <div class="card">
+                    <div class="card-title">Features</div>
+                    <p style="color:var(--text-secondary);font-size:14px">Sub-process decomposition · Quantitative ROI calculator · What-if simulation · Score explanation engine · Benchmark similarity matching · Regulatory framework mapping · Remediation playbooks</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="live-preview-tooltip" class="preview-tooltip" style="display:none">
+        <div id="tooltip-score" style="font-size:24px;font-weight:700">0</div>
+        <div id="tooltip-rec" style="font-size:11px;color:var(--text-muted)">Recommendation</div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
